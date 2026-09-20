@@ -11,9 +11,11 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Unit;
 import net.minecraft.world.damagesource.DamageSource;
@@ -24,9 +26,10 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.UnaryOperator;
 
 public record Affix(
         Component description,
@@ -56,12 +59,17 @@ public record Affix(
         return new LootContext.Builder(lootparams).create(Optional.empty());
     }
 
+    public static Affix.Builder builder() {
+        return new Builder();
+    }
+
     public <T> List<T> getEffects(DataComponentType<List<T>> effectComponent) {
         return this.effects.getOrDefault(effectComponent, List.of());
     }
 
     /**
      * 将直接使用LootContext以支持更多上下文参数
+     *
      * @param world
      * @param level
      * @param victim
@@ -79,5 +87,67 @@ public record Affix(
         return false;
     }
 
+    public static class Builder {
+        private final Map<DataComponentType<?>, List<?>> effectLists = new HashMap<>();
+        private UnaryOperator<MutableComponent> nameFactory = UnaryOperator.identity();
+        private HolderSet<EntityType<?>> supportedEntities = HolderSet.empty();
+        private HolderSet<Affix> exclusiveSet = HolderSet.empty();
+        private DataComponentMap.Builder effectsBuilder = DataComponentMap.builder();
 
+        public Builder() {
+        }
+
+        public Builder customName(UnaryOperator<MutableComponent> nameFactory) {
+            this.nameFactory = nameFactory;
+            return this;
+        }
+
+        public Builder exclusiveSet(HolderSet<Affix> exclusiveSet) {
+            this.exclusiveSet = exclusiveSet;
+            return this;
+        }
+
+        public Builder supportedEntities(HolderSet<EntityType<?>> supportedEntities) {
+            this.supportedEntities = supportedEntities;
+            return this;
+        }
+
+        public Builder withEffect(DataComponentType<List<ConditionalEffect<Unit>>> component) {
+            this.getEffectsList(component).add(new ConditionalEffect<>(Unit.INSTANCE, Optional.empty()));
+            return this;
+        }
+
+        public Builder withEffect(DataComponentType<List<ConditionalEffect<Unit>>> component, LootItemCondition.Builder requirement) {
+            this.getEffectsList(component).add(new ConditionalEffect<>(Unit.INSTANCE, Optional.of(requirement.build())));
+            return this;
+        }
+
+        public <E> Builder withEffect(DataComponentType<List<ConditionalEffect<E>>> component, E effect) {
+            this.getEffectsList(component).add(new ConditionalEffect<>(effect, Optional.empty()));
+            return this;
+        }
+
+        public <E> Builder withEffect(DataComponentType<List<ConditionalEffect<E>>> component, E effect, LootItemCondition.Builder requirement) {
+            this.getEffectsList(component).add(new ConditionalEffect<>(effect, Optional.of(requirement.build())));
+            return this;
+        }
+
+        public Affix build(ResourceLocation id) {
+            return new Affix(
+                    this.nameFactory.apply(Component.translatable(id.toLanguageKey("affix"))),
+                    this.supportedEntities,
+                    this.exclusiveSet,
+                    this.effectsBuilder.build()
+            );
+        }
+
+        private <E> List<E> getEffectsList(DataComponentType<List<E>> componentType) {
+            //noinspection unchecked
+            return (List<E>) this.effectLists.computeIfAbsent(componentType, component -> {
+                ArrayList<E> arraylist = new ArrayList<>();
+                this.effectsBuilder.set(componentType, arraylist);
+                return arraylist;
+            });
+        }
+    }
 }
