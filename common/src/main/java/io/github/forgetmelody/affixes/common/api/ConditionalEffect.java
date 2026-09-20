@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.ValidationContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -33,5 +34,9 @@ public record ConditionalEffect<T>(
                                     .orElseGet(() -> DataResult.success(condition));
                         }
                 );
+    }
+
+    public boolean matches(LootContext context) {
+        return this.requirement.map(condition -> condition.test(context)).orElse(true);
     }
 }
