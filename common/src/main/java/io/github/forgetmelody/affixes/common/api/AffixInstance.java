@@ -1,4 +1,4 @@
-package io.github.forgetmelody.affixes.api;
+package io.github.forgetmelody.affixes.common.api;
 
 import net.minecraft.core.Holder;
 

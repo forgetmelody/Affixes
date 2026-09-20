@@ -1,7 +1,7 @@
-package io.github.forgetmelody.affixes.registries;
+package io.github.forgetmelody.affixes.common.registries;
 
-import io.github.forgetmelody.affixes.AffixesMod;
-import io.github.forgetmelody.affixes.api.Affix;
+import io.github.forgetmelody.affixes.common.AffixesMod;
+import io.github.forgetmelody.affixes.common.api.Affix;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceKey;

@@ -1,4 +1,4 @@
-package io.github.forgetmelody.affixes.api;
+package io.github.forgetmelody.affixes.common.api;
 
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;

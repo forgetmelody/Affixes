@@ -1,8 +1,8 @@
-package io.github.forgetmelody.affixes;
+package io.github.forgetmelody.affixes.common;
 
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
-import io.github.forgetmelody.affixes.api.AffixHolder;
+import io.github.forgetmelody.affixes.common.api.AffixHolder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;

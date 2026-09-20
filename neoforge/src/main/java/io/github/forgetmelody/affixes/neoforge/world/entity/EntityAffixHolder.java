@@ -1,8 +1,8 @@
-package io.github.forgetmelody.affixes.world.entity;
+package io.github.forgetmelody.affixes.neoforge.world.entity;
 
-import io.github.forgetmelody.affixes.api.AffixHolder;
-import io.github.forgetmelody.affixes.api.EntityAffixes;
-import io.github.forgetmelody.affixes.attachments.Attachments;
+import io.github.forgetmelody.affixes.common.api.AffixHolder;
+import io.github.forgetmelody.affixes.common.api.EntityAffixes;
+import io.github.forgetmelody.affixes.neoforge.attachments.Attachments;
 import net.minecraft.world.entity.Entity;
 
 import java.util.function.Consumer;

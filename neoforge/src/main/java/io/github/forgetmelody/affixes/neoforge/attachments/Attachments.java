@@ -1,7 +1,7 @@
-package io.github.forgetmelody.affixes.attachments;
+package io.github.forgetmelody.affixes.neoforge.attachments;
 
-import io.github.forgetmelody.affixes.AffixesMod;
-import io.github.forgetmelody.affixes.api.EntityAffixes;
+import io.github.forgetmelody.affixes.common.AffixesMod;
+import io.github.forgetmelody.affixes.common.api.EntityAffixes;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
