@@ -32,25 +32,49 @@ public final class AffixCommands {
                                         )
                                 )
                         )
+                        .then(Commands.literal("remove")
+                                .then(Commands.argument("affix", ResourceArgument.resource(buildContext, Registries.AFFIX))
+                                        .then(Commands.argument("entities", EntityArgument.entities())
+                                                .executes(context -> remove(context.getSource(), ResourceArgument.getResource(context, "affix", Registries.AFFIX), EntityArgument.getEntities(context, "entities")))
+                                        )
+                                )
+                        )
         );
+    }
+
+    public static int remove(CommandSourceStack source, Holder<Affix> affix,  Collection<? extends Entity> entities) {
+        int i = entities.size();
+        for (Entity entity : entities) {
+            AffixHolder.get(entity).update(mutable -> mutable.remove(affix));
+        }
+        if (i == 0) {
+            source.sendFailure(Component.literal("未找到实体"));
+        } else if (i == 1) {
+            source.sendSuccess(() -> Component.literal("已经从")
+                    .append(entities.stream().findFirst().orElseThrow().getDisplayName())
+                    .append(Component.literal("移除"))
+                    .append(affix.value().description()), false);
+        } else {
+            source.sendSuccess(() -> Component.literal("已经移除" + i + "个实体的").append(affix.value().description()), false);
+        }
+        return i;
     }
 
     public static int set(CommandSourceStack source, Holder<Affix> affix, int level, Collection<? extends Entity> entities) {
         int i = entities.size();
         for (Entity entity : entities) {
-            AffixHolder.get(entity).update(mutable -> {
-                mutable.set(affix, level);
-            });
+            AffixHolder.get(entity).update(mutable -> mutable.set(affix, level));
         }
 
         if (i == 0) {
-            source.sendFailure(Component.literal("没有找到实体"));
+            source.sendFailure(Component.literal("未找到实体"));
         } else if (i == 1) {
-            source.sendSuccess(() -> Component.literal("已经给")
+            source.sendSuccess(() -> Component.literal("已经为")
                     .append(entities.stream().findFirst().orElseThrow().getDisplayName())
+                    .append(Component.literal("添加"))
                     .append(affix.value().description()), false);
         } else {
-            source.sendSuccess(() -> Component.literal("已经给" + i + "个实体添加了").append(affix.value().description()), false);
+            source.sendSuccess(() -> Component.literal("已经为" + i + "个实体添加了").append(affix.value().description()), false);
         }
         return i;
     }
