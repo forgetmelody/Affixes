@@ -10,17 +10,17 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.level.storage.loot.predicates.DamageSourceCondition;
 
 public final class Affixes {
-    public static final ResourceKey<Affix> TEST = register("test");
+    public static final ResourceKey<Affix> IMMUNE_PLAYER_DAMAGE = register("immune_player_damage");
 
     private Affixes() {
     }
 
     public static void boostrap(BootstrapContext<Affix> context) {
         context.register(
-                TEST,
+                IMMUNE_PLAYER_DAMAGE,
                 Affix.builder()
                         .withEffect(AffixEffectComponents.IMMUNE_DAMAGE, DamageSourceCondition.hasDamageSource(new DamageSourcePredicate.Builder().tag(TagPredicate.is(DamageTypeTags.IS_PLAYER_ATTACK))))
-                        .build(TEST.location())
+                        .build(IMMUNE_PLAYER_DAMAGE.location())
         );
     }
 

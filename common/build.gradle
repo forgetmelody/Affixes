@@ -34,18 +34,18 @@ neoForge {
     }
 
     runs {
-        client {
-            client()
-        }
-
-        server {
-            server()
-            programArgument '--nogui'
-        }
-
-        data {
-            data()
-        }
+//        client {
+//            client()
+//        }
+//
+//        server {
+//            server()
+//            programArgument '--nogui'
+//        }
+//
+//        data {
+//            data()
+//        }
     }
 
 }

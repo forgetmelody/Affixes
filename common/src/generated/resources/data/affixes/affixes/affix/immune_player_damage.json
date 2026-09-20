@@ -1,6 +1,6 @@
 {
   "description": {
-    "translate": "affix.affixes.test"
+    "translate": "affix.affixes.immune_player_damage"
   },
   "effects": {
     "affixes:immune_damage": [

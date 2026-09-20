@@ -17,10 +17,13 @@ sourceSets.main.java {
 }
 
 sourceSets.main.resources {
-    srcDir project(':common').sourceSets.main.resources.srcDirs
-//    srcDir('src/generated/resources')
+//    srcDir project(':common').sourceSets.main.resources.srcDirs
 
-    exclude("src/generated/**/.cache")
+//    srcDir('src/generated/resources')
+//    exclude("src/generated/**/.cache")
+
+    srcDir("../common/src/generated/resources")
+    exclude("../common/src/generated/**/.cache")
 }
 
 repositories {
