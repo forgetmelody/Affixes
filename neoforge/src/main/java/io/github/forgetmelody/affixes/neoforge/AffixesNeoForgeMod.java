@@ -14,6 +14,7 @@ import io.github.forgetmelody.affixes.neoforge.registries.BuiltInRegistries;
 import io.github.forgetmelody.affixes.neoforge.world.entity.EntityAffixHolder;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.component.DataComponentType;
@@ -92,7 +93,10 @@ public class AffixesNeoForgeMod extends AffixesMod {
     private void registerCommands(RegisterCommandsEvent event) {
         CommandBuildContext buildContext = event.getBuildContext();
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
-        AffixCommands.register(dispatcher, buildContext);
+        dispatcher.register(
+                Commands.literal(AffixesMod.MOD_ID)
+                        .then(AffixCommands.register(buildContext))
+        );
     }
 
     private void immuneDamage(LivingIncomingDamageEvent event) {

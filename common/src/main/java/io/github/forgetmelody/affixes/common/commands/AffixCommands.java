@@ -1,7 +1,7 @@
 package io.github.forgetmelody.affixes.common.commands;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import io.github.forgetmelody.affixes.common.api.Affix;
 import io.github.forgetmelody.affixes.common.api.AffixHolder;
 import io.github.forgetmelody.affixes.common.registries.Registries;
@@ -20,29 +20,27 @@ public final class AffixCommands {
     private AffixCommands() {
     }
 
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
-        dispatcher.register(
-                Commands.literal("affix").requires(source -> source.hasPermission(2))
-                        .then(Commands.literal("set")
-                                .then(Commands.argument("affix", ResourceArgument.resource(buildContext, Registries.AFFIX))
-                                        .then(Commands.argument("level", IntegerArgumentType.integer(0, 255))
-                                                .then(Commands.argument("entities", EntityArgument.entities())
-                                                        .executes(context -> set(context.getSource(), ResourceArgument.getResource(context, "affix", Registries.AFFIX), IntegerArgumentType.getInteger(context, "level"), EntityArgument.getEntities(context, "entities")))
-                                                )
-                                        )
-                                )
-                        )
-                        .then(Commands.literal("remove")
-                                .then(Commands.argument("affix", ResourceArgument.resource(buildContext, Registries.AFFIX))
+    public static ArgumentBuilder<CommandSourceStack, ?> register(CommandBuildContext buildContext) {
+        return Commands.literal("affix").requires(source -> source.hasPermission(2))
+                .then(Commands.literal("set")
+                        .then(Commands.argument("affix", ResourceArgument.resource(buildContext, Registries.AFFIX))
+                                .then(Commands.argument("level", IntegerArgumentType.integer(0, 255))
                                         .then(Commands.argument("entities", EntityArgument.entities())
-                                                .executes(context -> remove(context.getSource(), ResourceArgument.getResource(context, "affix", Registries.AFFIX), EntityArgument.getEntities(context, "entities")))
+                                                .executes(context -> set(context.getSource(), ResourceArgument.getResource(context, "affix", Registries.AFFIX), IntegerArgumentType.getInteger(context, "level"), EntityArgument.getEntities(context, "entities")))
                                         )
                                 )
                         )
-        );
+                )
+                .then(Commands.literal("remove")
+                        .then(Commands.argument("affix", ResourceArgument.resource(buildContext, Registries.AFFIX))
+                                .then(Commands.argument("entities", EntityArgument.entities())
+                                        .executes(context -> remove(context.getSource(), ResourceArgument.getResource(context, "affix", Registries.AFFIX), EntityArgument.getEntities(context, "entities")))
+                                )
+                        )
+                );
     }
 
-    public static int remove(CommandSourceStack source, Holder<Affix> affix,  Collection<? extends Entity> entities) {
+    public static int remove(CommandSourceStack source, Holder<Affix> affix, Collection<? extends Entity> entities) {
         int i = entities.size();
         for (Entity entity : entities) {
             AffixHolder.get(entity).update(mutable -> mutable.remove(affix));
