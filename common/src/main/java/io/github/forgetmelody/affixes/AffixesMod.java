@@ -2,16 +2,13 @@ package io.github.forgetmelody.affixes;
 
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
-import io.github.forgetmelody.affixes.api.Affix;
 import io.github.forgetmelody.affixes.api.AffixHolder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.Objects;
-import java.util.Optional;
 
 public abstract class AffixesMod {
     public static final String MOD_ID = "affixes";
@@ -30,7 +27,7 @@ public abstract class AffixesMod {
         return Objects.requireNonNull(instance);
     }
 
-    public abstract Optional<AffixHolder> get(Entity entity);
+    public abstract AffixHolder get(Entity entity);
 
-    public abstract Codec<DataComponentType>
+    public abstract Codec<DataComponentType<?>> getAffixEffectComponentCodec();
 }
