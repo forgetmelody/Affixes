@@ -2,6 +2,7 @@ package io.github.forgetmelody.affixes.common.api;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.forgetmelody.affixes.common.loot.parameters.LootContextParamSets;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
@@ -24,7 +25,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
@@ -55,7 +55,7 @@ public record Affix(
                 .withParameter(LootContextParams.DAMAGE_SOURCE, source)
                 .withOptionalParameter(LootContextParams.ATTACKING_ENTITY, source.getEntity())
                 .withOptionalParameter(LootContextParams.DIRECT_ATTACKING_ENTITY, source.getDirectEntity())
-                .create(LootContextParamSets.ENCHANTED_DAMAGE);
+                .create(LootContextParamSets.AFFIX_DAMAGE);
         return new LootContext.Builder(lootparams).create(Optional.empty());
     }
 
@@ -76,7 +76,7 @@ public record Affix(
      * @param source
      * @return
      */
-    public boolean isImmuneDamage(ServerLevel world, int level, LivingEntity victim, DamageSource source) {
+    public boolean isImmuneDamage(ServerLevel world, int level, Entity victim, DamageSource source) {
         LootContext context = damageContext(world, level, victim, source);
         for (ConditionalEffect<Unit> effect : getEffects(AffixEffectComponents.IMMUNE_DAMAGE)) {
             if (effect.matches(context)) {

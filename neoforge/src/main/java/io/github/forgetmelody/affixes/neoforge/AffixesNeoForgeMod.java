@@ -101,19 +101,13 @@ public class AffixesNeoForgeMod extends AffixesMod {
             DamageContainer damage = event.getContainer();
             LivingEntity victim = event.getEntity();
             DamageSource source = event.getSource();
+            AffixHolder affixHolder = AffixHolder.get(victim);
 
-            MutableBoolean immune = new MutableBoolean();
-
-            AffixHolder.get(victim).runIteration((affix, level) -> immune.setValue(
-                    immune.isTrue() || affix.value().isImmuneDamage(world, level, victim, source)
-            ));
-
-            if (immune.booleanValue()) {
+            if (affixHolder.isImmuneDamage(world, victim, source)) {
                 event.setCanceled(true);
             }
         }
 
     }
-
 
 }

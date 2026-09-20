@@ -1,7 +1,11 @@
 package io.github.forgetmelody.affixes.common.api;
 
-import io.github.forgetmelody.affixes.common.AffixesMod;import net.minecraft.core.Holder;
+import io.github.forgetmelody.affixes.common.AffixesMod;
+import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -19,6 +23,14 @@ public interface AffixHolder {
     void runIteration(AffixVisitor visitor);
 
     void update(Consumer<AffixHolder.Mutable> updater);
+
+    default boolean isImmuneDamage(ServerLevel world, Entity victim, DamageSource source) {
+        MutableBoolean immune = new MutableBoolean();
+        AffixHolder.get(victim).runIteration((affix, level) -> immune.setValue(
+                immune.isTrue() || affix.value().isImmuneDamage(world, level, victim, source)
+        ));
+        return immune.booleanValue();
+    }
 
     interface Mutable {
 
